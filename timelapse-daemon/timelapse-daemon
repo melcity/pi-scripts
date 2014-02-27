@@ -1,22 +1,18 @@
 #!/bin/sh
 
 ### BEGIN INIT INFO
-# Provides:          WeatherLogger
-# Required-Start:    udev $time $network $local_fs $remote_fs
-# Required-Stop:     udev $time $network $local_fs $remote_fs
+# Provides:          Timelapse-Daemon
+# Required-Start:    udev $time $local_fs 
+# Required-Stop:     udev $time $local_fs 
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Weather Station Data Logging Service
-# Description:	     Service to record and process weather data from 
-#		     attached USB wireless weather station.
+# Short-Description: Timelapse photo service.
+# Description:	     Service to take periodic timelapse image captures using raspistill.
 ### END INIT INFO
 
-NAME=WeatherLogger
-DATADIR=/media/netdisk/weather/data
-LOGFILE=$DATADIR/live_logger.log
+NAME=Timelapse-Daemon
 PIDFILE=/var/run/pywws.pid
-DAEMON=/usr/local/bin/pywws-livelog.py
-DAEMON_OPTS="-vv -l $LOGFILE $DATADIR"
+DAEMON=/usr/local/bin/timelapse.sh
 
 . /lib/lsb/init-functions
 
@@ -25,15 +21,16 @@ case "$1" in
 		# Check if the PID file exists and check the status of the process
 		[ -e $PIDFILE ] && ps -p `cat $PIDFILE` > /dev/null 2>&1 && exit 5
 		# Start the daemon.
-		log_daemon_msg "Starting the process" "$NAME"
+		log_daemon_msg "Starting $NAME"
 		# Start the daemon witht he help of start-stop-daemon
 		#Log the message appropriately
-		$DAEMON $DAEMON_OPTS &
+		$DAEMON &
 		echo $! >$PIDFILE
 		log_end_msg 0
 		;;
 	stop)
 		# Stop the daemon
+		log_daemon_msg "Stopping $NAME"
 		if [ -e $PIDFILE ]; then
 			kill -9 `cat $PIDFILE`
 			rm -rf $PIDFILE
@@ -52,7 +49,7 @@ case "$1" in
 			log_daemon_msg "$NAME is running"
 			log_end_msg 0
 		else
-			log_daemon_msg "$NAME Process is not running"
+			log_daemon_msg "$NAME is not running"
 			log_end_msg 0 
 		fi
 		;;
