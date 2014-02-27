@@ -1,0 +1,69 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          WeatherLogger
+# Required-Start:    udev $time $network $local_fs $remote_fs
+# Required-Stop:     udev $time $network $local_fs $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Weather Station Data Logging Service
+# Description:	     Service to record and process weather data from 
+#		     attached USB wireless weather station.
+### END INIT INFO
+
+NAME=WeatherLogger
+DATADIR=/media/netdisk/weather/data
+LOGFILE=$DATADIR/live_logger.log
+PIDFILE=/var/run/pywws.pid
+DAEMON=/usr/local/bin/pywws-livelog.py
+DAEMON_OPTS="-vv -l $LOGFILE $DATADIR"
+
+. /lib/lsb/init-functions
+
+case "$1" in
+	start)
+		# Check if the PID file exists and check the status of the process
+		[ -e $PIDFILE ] && ps -p `cat $PIDFILE` > /dev/null 2>&1 && exit 5
+		# Start the daemon.
+		log_daemon_msg "Starting the process" "$NAME"
+		# Start the daemon witht he help of start-stop-daemon
+		#Log the message appropriately
+		$DAEMON $DAEMON_OPTS &
+		echo $! >$PIDFILE
+		log_end_msg 0
+		;;
+	stop)
+		# Stop the daemon
+		if [ -e $PIDFILE ]; then
+			kill -9 `cat $PIDFILE`
+			rm -rf $PIDFILE
+		else
+			log_daemon_msg "$NAME is not running"
+			log_end_msg 0
+		fi
+		;;
+	restart)
+		# Restart the daemon
+		$0 stop && sleep 2 && $0 start
+		;;
+	status)
+		# Check the status of the process
+		if [ -e $PIDFILE ]; then
+			log_daemon_msg "$NAME is running"
+			log_end_msg 0
+		else
+			log_daemon_msg "$NAME Process is not running"
+			log_end_msg 0 
+		fi
+		;;
+	reload)
+		# Reload the processs Basically sending a signal to the daemon to reload it's configuration
+		$0 stop && sleep 2 && $0 start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart|reload|status}"
+		exit 2
+		;;
+esac
+
+exit 0
