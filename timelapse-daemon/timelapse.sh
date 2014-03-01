@@ -21,7 +21,7 @@ source $CONF
 while [ true ]; do
         filename=img-$(date -u +"%Y%m%d%H%M%S").jpg
         echo "Taking timelapse photo $SAVE_DIR/$filename"
-        raspistill $RASPISTILL_ARGS -n -o $SAVE_DIR/$filename
+        raspistill -n -o $SAVE_DIR/$filename
         # Wait for next shot
         sleep $PERIOD
 done

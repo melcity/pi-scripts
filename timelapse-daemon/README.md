@@ -33,8 +33,7 @@ timelapse.conf is the configuration file for the timelapse photography service.
 This should be placed in /etc/default/
 
 This file can be edited to change settings such as the location for image files,
-time lapse period and passing arguments to the raspistill utility which takes
-the photos.
+time lapse period.
 
 timelapse.sh
 ============
