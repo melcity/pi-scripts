@@ -7,6 +7,7 @@ These scripts allow you to use your [Raspberry Pi](www.raspberrypi.org) for time
 timelapse-daemon is an init script that allows starting and stopping the time lapse photography service (daemon).  This can be used to start the time lapse service when the Raspberry Pi starts, and gracefully stops the service when the Raspberry Pi is shutting down.
 
 To enable this script to run at system startup, do the following:
+
 1. Copy timelapse-daemon to /etc/init.d/
 2. Copy timelapse.conf to /etc/default/
 3. Copy timelapse.sh to /usr/local/bin
