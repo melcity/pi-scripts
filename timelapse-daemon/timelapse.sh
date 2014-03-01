@@ -1,12 +1,17 @@
 #!/bin/bash
+
+# This script takes timelapse photos.
+# This should be placed in /usr/local/bin
 #
-# Takes timelapse photos using raspistill
 # Author: Chris Collins
 #
 
 # Ensure that our configuration file is available, or exit.
 CONF=/etc/default/timelapse.conf
-[ -e $CONF ] && exit 1
+if [ ! -e $CONF ]; then
+    echo "Failed to load configuration file $CONF"
+    exit 1
+fi
 source $CONF
 
 # Ensure we have a save dir
@@ -14,9 +19,11 @@ source $CONF
 
 # Start the timelapse loop
 while [ true ]; do
-	filename=tl-$(date -u +"%Y%m%d%H%M%S").jpg
-	raspistill -n -o $SAVE_DIR/$filename
-	# Wait for next shot
-	sleep $PERIOD
+        filename=img-$(date -u +"%Y%m%d%H%M%S").jpg
+        echo "Taking timelapse photo $SAVE_DIR/$filename"
+        raspistill $RASPISTILL_ARGS -n -o $SAVE_DIR/$filename
+        # Wait for next shot
+        sleep $PERIOD
 done
+
 

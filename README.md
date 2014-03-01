@@ -1,4 +1,6 @@
 pi-scripts
 ==========
 
-Scripts and hacks for the Raspberry Pi.
+Timelapse-daemon
+================
+A set of scripts for time lapse photography on the Raspberry Pi.

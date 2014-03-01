@@ -1,5 +1,4 @@
 #!/bin/sh
-
 ### BEGIN INIT INFO
 # Provides:          Timelapse-Daemon
 # Required-Start:    udev $time $local_fs 
@@ -10,8 +9,14 @@
 # Description:	     Service to take periodic timelapse image captures using raspistill.
 ### END INIT INFO
 
+# This is an init script for a timelapse photography service.
+# This file should be placed in /etc/init.d/timelapse-daemon
+#
+# Author: Chris Collins
+#
+
 NAME=Timelapse-Daemon
-PIDFILE=/var/run/pywws.pid
+PIDFILE=/var/run/timelapse-daemon.pid
 DAEMON=/usr/local/bin/timelapse.sh
 
 . /lib/lsb/init-functions
@@ -24,7 +29,7 @@ case "$1" in
 		log_daemon_msg "Starting $NAME"
 		# Start the daemon witht he help of start-stop-daemon
 		#Log the message appropriately
-		$DAEMON &
+		$DAEMON > /dev/null 2>&1 &
 		echo $! >$PIDFILE
 		log_end_msg 0
 		;;
